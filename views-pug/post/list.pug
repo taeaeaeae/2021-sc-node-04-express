@@ -1,0 +1,16 @@
+extends ../layout/list-layout.pug
+block content
+    table.table.table-dark.text-center
+        thead 
+            tr 
+                th(style="width: 80px;") 번호
+                th(style="width: 150px") 작성자
+                th 제목
+                th 내용
+        tbody
+            each list in lists 
+                tr.table-light 
+                    td= list.id 
+                    td= list.username 
+                    td.text-start= list.title
+                    td.text-start= list.body

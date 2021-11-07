@@ -1,0 +1,9 @@
+include ../inc/head.pug
+include ../inc/nav.pug
+include ../inc/mixin.pug
+
+div.container.my-4
+    //- 페이지별 내용
+    block content
+    include ../inc/pager.pug
+    .ad-wrap.p-4.text-center.border 광고 영역

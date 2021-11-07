@@ -8,26 +8,31 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-
 const listURL = "https://jsonplaceholder.typicode.com/posts";
 const userURL = "https://jsonplaceholder.typicode.com/users";
 
 router.get("/", async (req, res) => {
-  try {
-    const page = Number(req.query.page || 1);
-    const { data: _lists } = await axios.get(listURL);
-    const { data: _users } = await axios.get(userURL);
-    const pageCount = Math.ceil(_lists.length / 8);
-    const lists = _lists.filter((v, i) => (page - 1) * 8 <= i && (page - 1) * 8 + 8 > i);
-    for (let list of _lists) {
-      let [{ name }] = _users.filter((v) => v.id === list.userId);
-      list.username = name;
+    try {
+      console.time();
+      const page = Number(req.query.page || 1);
+      const { data } = await axios.get(listURL);
+      const lists = data.filter((v, i) => (page - 1) * 10 <= i && (page - 1) * 10 + 10 > i);
+      for (let list of lists) {
+        let { data: user } = await axios.get(userURL + "/" + list.userId);
+        list.username = user.name;
+      }
+      console.timeEnd();
+    /* lists.forEach(async (v,i)=>{
+        let {data:user} = await axios.get(userURL + "/"+ v.userId);
+        v.username = user.name;
+    });
+    */
+      console.log("foreach 끝")
+      res.render("post/list", { lists });
+    } catch (err) {
+      console.log(err);
     }
-    res.render("post/list", { lists, pageCount, pagerPath: "post" });
-  } catch (err) {
-    console.log(err);
-  }
-});
+  });
 
 router.get("/:id", (req, res) => {
   res.send(req.params.id + "번 글");

@@ -1,0 +1,13 @@
+
+extends ../layout/list-layout.pug
+block content 
+  table.table.table-primary 
+    thead 
+      tr 
+        th 번호
+        th 이름
+        th 전화번호
+        th 이메일
+    tbody.table-light 
+      each list in lists
+        +userData(list)
