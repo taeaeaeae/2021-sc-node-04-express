@@ -1,0 +1,26 @@
+doctype html
+html(lang="ko")
+    head
+        meta(charset="UTF-8")
+        title= headTitle
+        link(rel="stylesheet", href="/css/pug/lists.css")
+        style(type="text/css" rel="stylesheet").
+            table{
+                width:80%; 
+                margin: 1em auto; 
+                text-align: center;
+            }
+    body
+        h1 게시글
+        table(border="1")
+            thead
+                rt 
+                    th 번호
+                    th 제목
+                    th 작성일
+            tbody 
+                each list in lists
+                    tr
+                        td= list.id
+                        td= list.title
+                        td= list.data
