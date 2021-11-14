@@ -1,0 +1,32 @@
+<%- include('../inc/head.ejs') %>
+<h2 class="mb-3">글 작성하기</h2>
+<hr>
+<form method="POST" action="/board">
+  <table class="table">
+    <tbody>
+      <tr>
+        <td style="width: 150px;">제목</td>
+        <td>
+          <input type="text" name="title" class="form-control" placeholder="제목을 입력하세요">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">작성자</td>
+        <td>
+          <input type="text" name="writer" class="form-control" placeholder="작성자를 입력하세요.">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">내용</td>
+        <td>
+          <textarea name="content" class="form-control" style="min-height: 250px;" placeholder="내용을 입력하세요."></textarea>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="text-center my-3">
+    <button type="submit" class="btn btn-primary">저장</button>
+    <button type="reset" class="btn btn-danger">다시작성</button>
+  </div>
+</form>
+<%- include('../inc/foot.ejs') %>

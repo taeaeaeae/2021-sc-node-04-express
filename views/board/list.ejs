@@ -1,0 +1,22 @@
+<%- include('../inc/head.ejs') %> 
+<table class="table table-success text-center">
+  <thead>
+    <tr>
+      <th style="width: 80px;">번호</th>
+      <th>제목</th>
+      <th style="width: 160px;">작성자</th>
+      <th style="width: 160px;">작성일</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(let v of lists) { %>
+      <tr class="table-light">
+        <td><%= v.id %></td>
+        <td style="text-align: left;"><%= v.title %></td>
+        <td><%= v.writer %></td>
+        <td><%= v.wdate %></td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+<%- include('../inc/foot.ejs') %> 

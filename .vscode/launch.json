@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+      {
+        "command": "npm run serve",
+        "name": "Run serve",
+        "request": "launch",
+        "type": "node-terminal"
+      },
+      {
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "name": "nodemon",
+        "program": "${workspaceFolder}/app.js",
+        "request": "launch",
+        "restart": true,
+        "runtimeExecutable": "nodemon",
+        "skipFiles": ["<node_internals>/**"],
+        "type": "pwa-node"
+      },
+      {
+        "name": "Launch Program",
+        "program": "${workspaceFolder}/06.middleware.js",
+        "request": "launch",
+        "skipFiles": ["<node_internals>/**"],
+        "type": "pwa-node"
+      }
+    ]
+  }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= status %> Error</title>
+  <style>
+    .wrapper {max-width: 800px; margin: 10% auto;}
+    .summary-wrap {display: flex; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid #999;}
+    .summary-wrap .icon {max-width: 120px;}
+    .summary-wrap .icon img {width: 100%;}
+    .summary-wrap .summary {padding-left: 30px;}
+    .summary-wrap .summary h1 {margin: 24px 0 6px 0;}
+    .summary-wrap .summary p {padding-left: 6px; margin: 0;}
+    .content-wrap {margin-bottom: 24px;}
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="summary-wrap">
+      <div class="icon">
+        <img src="/img/error/<%= status == '404' ? '404' : '500' %>.png" alt="error icon">
+      </div>
+      <div class="summary">
+        <h1><%= status %> <small>Error</small></h1>
+        <p><%= message %></p>
+      </div>
+    </div>
+    <div class="content-wrap">
+      <%= description || message %>
+    </div>
+    <div class="link-wrap">
+      <a href="/">메인으로 돌아가기</a>
+    </div>
+  </div>
+</body>
+</html>
