@@ -1,11 +1,11 @@
 /******** Global require *******/
-require('dotenv').config();
+require('./modules/dotenv-init')();
 const express = require("express");
 //const logger = require("./middlewares/logger-mw");
 const app = express();
 
 /********* Server Init *********/
-require("./modules/server-init")(app, 3000);
+require("./modules/server-init")(app, process.env.PORT);
 
 /******* Middleware Init *******/
 //app.use(logger);

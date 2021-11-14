@@ -31,8 +31,8 @@ router.get("/", async (req, res, next) => {
       let sql = "SELECT * FROM board ORDER BY id DESC";
       const [lists] = await pool.execute(sql);
       lists.forEach((v) => (v.wdate = moment(v.createdAt).format("YYYY-MM-DD")));
-      res.json(process.env);
-      // res.render("board/list", {lists});
+      // res.json(lists);
+      res.render("board/list", {lists});
     }
   } catch (err) {
     next(createError(err));
