@@ -20,10 +20,12 @@ app.locals.headTitle = "Express Twitter";
 app.use(express.json());
 app.use(express.urlencoded());
 
+/*************Static Init ********/
+app.use("/", express.static("./public"));
+app.use("/storages", express.static("./storages"));
+
 /********* Router Init *********/
 const boardRouter = require("./routes/board-router");
-
-app.use("/", express.static("./public"));
 app.use("/board", boardRouter);
 
 /********** Error Init *********/

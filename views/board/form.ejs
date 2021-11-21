@@ -1,13 +1,13 @@
 <%- include('../inc/head.ejs') %>
 <h2 class="mb-3">글 작성하기</h2>
 <hr>
-<form method="POST" action="/board">
+<form method="POST" action="/board" enctype="multipart/form-data">
   <table class="table">
     <tbody>
       <tr>
         <td style="width: 150px;">제목</td>
         <td>
-          <input type="text" name="title" class="form-control" placeholder="제목을 입력하세요">
+          <input type="text" name="title" class="form-control" placeholder="제목을 입력하세요" autofocus>
         </td>
       </tr>
       <tr>
@@ -20,6 +20,30 @@
         <td style="width: 150px;">내용</td>
         <td>
           <textarea name="content" class="form-control" style="min-height: 250px;" placeholder="내용을 입력하세요."></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">첨부이미지</td>
+        <td>
+          <input type="file" name="uploadImg" class="form-control-file">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">첨부이미지</td>
+        <td>
+          <input type="file" name="uploadImg" class="form-control-file">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">첨부파일</td>
+        <td>
+          <input type="file" name="uploadFile" class="form-control-file">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">첨부파일</td>
+        <td>
+          <input type="file" name="uploadFile" class="form-control-file">
         </td>
       </tr>
     </tbody>

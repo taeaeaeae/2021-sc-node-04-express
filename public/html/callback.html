@@ -1,0 +1,32 @@
+<script>
+    let filePath = '';
+    let fileName = '';
+    function storage(obj) {
+      const req = 'REQ';
+      const file = 'FILE';
+      obj.destination(req, file, cb);
+      obj.filename(req, file, cb2);
+    }
+  
+    function cb(err, path) {
+      if(err) console.log(err)
+      else filePath = path;
+      console.log(filePath);
+    }
+  
+    function cb2(err, path) {
+      if(err) console.log(err)
+      else fileName = path;
+      console.log(fileName);
+    }
+  
+  
+    storage({
+      destination: (req, file, cb) => {
+        cb(null, req + '/folder');
+      },
+      filename: (req, file, cb) => {
+        cb(null, file + '/folder');
+      }
+    })
+  </script>

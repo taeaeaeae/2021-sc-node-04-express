@@ -18,8 +18,12 @@ Semantic
 
 const express = require("express");
 const createError = require("http-errors");
-const { pool } = require("../modules/mysql-init.js");
+const { pool } = require("../modules/mysql-init");
+const pagerInit = require("../modules/pager-init");
 const moment = require("moment");
+const uploader = require("../middlewares/multer-mw");
+const resizer = require("../middlewares/sharp-mw");
+
 const router = express.Router();
 
 // list
@@ -28,11 +32,18 @@ router.get("/", async (req, res, next) => {
     const { page = 1, type } = req.query;
     if (type === "create") next();
     else {
-      let sql = "SELECT * FROM board ORDER BY id DESC";
-      const [lists] = await pool.execute(sql);
+      let sql = "";
+      sql = "SELECT COUNT(id) AS totalRecord FROM board";
+      const [[{ totalRecord }]] = await pool.execute(sql);
+      const pager = pagerInit(page, totalRecord);
+      pager.loc = "/board";
+      sql = "SELECT * FROM board ORDER BY id DESC LIMIT ?, ?";
+      const [lists] = await pool.execute(sql, [
+        pager.startIdx.toString(),
+        pager.listCnt.toString(),
+      ]);
       lists.forEach((v) => (v.wdate = moment(v.createdAt).format("YYYY-MM-DD")));
-      // res.json(lists);
-      res.render("board/list", {lists});
+      res.render("board/list", { lists, pager });
     }
   } catch (err) {
     next(createError(err));
@@ -49,16 +60,41 @@ router.get("/", async (req, res, next) => {
 });
 
 // save
-router.post("/", async (req, res, next) => {
-  try {
-    const { title, writer, content } = req.body;
-    let sql = "INSERT INTO board SET title=?, writer=?, content=?";
-    const [rs] = await pool.execute(sql, [title, writer, content]);
-    res.json(rs);
-  } catch (err) {
-    next(createError(err));
+router.post(
+  "/",
+  uploader.fields([{ name: "uploadImg" }, { name: "uploadFile" }]),
+  resizer("uploadImg"),
+  async (req, res, next) => {
+    try {
+      let sql = "";
+      const { title, writer, content } = req.body;
+      sql = "INSERT INTO board SET title=?, writer=?, content=?";
+      const [rs] = await pool.execute(sql, [title, writer, content]);
+
+      if (req.files.uploadImg) {
+        for (let v of req.files.uploadImg) {
+          sql =
+            "INSERT INTO uploadfiles SET saveName=?, originName=?, mimeType=?, size=?, type=?, board_id=?";
+          let { filename, originalname, size, mimetype } = v;
+          await pool.execute(sql, [filename, originalname, mimetype, size, "I", rs.insertId]);
+        }
+      }
+
+      if (req.files.uploadFile) {
+        for (let v of req.files.uploadFile) {
+          sql =
+            "INSERT INTO uploadfiles SET saveName=?, originName=?, mimeType=?, size=?, type=?, board_id=?";
+          let { filename, originalname, size, mimetype } = v;
+          await pool.execute(sql, [filename, originalname, mimetype, size, "F", rs.insertId]);
+        }
+      }
+
+      res.redirect("/board");
+    } catch (err) {
+      next(createError(err));
+    }
   }
-});
+);
 
 // list
 router.get("/", async (req, res, next) => {

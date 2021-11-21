@@ -1,0 +1,40 @@
+<style>
+    .pager-wrap {
+      margin: 2em 0;
+      display: flex;
+      justify-content: center;
+    }
+    .pager-wrap .pager {
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border: 1px solid #ccc;
+      margin-right: -1px;
+      text-decoration: none;
+    }
+    .pager-wrap .pager:link,
+    .pager-wrap .pager:active,
+    .pager-wrap .pager:visited {
+      color: inherit;
+    }
+    .pager-wrap .pager:hover {
+      background-color: cadetblue;
+      color: #fff;
+    }
+    .pager-wrap .pager.active {
+      background-color: cadetblue;
+      color: #fff;
+    }
+  </style>
+  <div class="pager-wrap">
+    <a href="<%= loc %>?page=1" class="pager bi bi-chevron-bar-left"></a>
+    <a href="<%= loc %>?page=<%= prevPager %>" class="pager bi bi-chevron-double-left"></a>
+    <a href="<%= loc %>?page=<%= prevPage %>" class="pager bi bi-chevron-left"></a>
+    <% for(let i=startPage; i<=endPage; i++) { %>
+    <a href="<%= loc %>?page=<%= i %>" class="pager <%= (page == i) ? 'active' : '' %>"><%= i %></a>
+    <% } %>
+    <a href="<%= loc %>?page=<%= nextPage %>" class="pager bi bi-chevron-right"></a>
+    <a href="<%= loc %>?page=<%= nextPager %>" class="pager bi bi-chevron-double-right"></a>
+    <a href="<%= loc %>?page=<%= totalPage %>" class="pager bi bi-chevron-bar-right"></a>
+  </div>
