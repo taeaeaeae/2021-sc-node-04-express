@@ -6,31 +6,30 @@ const filePath = (name) => {
   const virtualPath = path.join("/uploads/", name.split("_")[0], name);
   const thumbPath = path.join("/uploads/", name.split("_")[0], "thumb", thumbName);
   const absolutePath = path.join(__dirname, "../storages", name.split("_")[0], name);
-  const thumbabsolutePath = path.join(__dirname, "../storages", name.split("_")[0], "thumb", thumbName);
-  // console.log(absolutePath);
-  // console.log(virtualPath);
-  // console.log(thumbPath);
-  return { absolutePath, virtualPath, thumbPath };
+  const thumbAbsolutePath = path.join(
+    __dirname,
+    "../storages",
+    name.split("_")[0],
+    "thumb",
+    thumbName
+  );
+  return { absolutePath, virtualPath, thumbPath, thumbAbsolutePath };
 };
 
 const deleteFile = async (files) => {
-  try {
-    if (typeof files === "string") {
-      let { absolutePath, thumbAbsolutPath } = filePath(files);
+  if (typeof files === "string") {
+    let { absolutePath, thumbAbsolutePath } = filePath(files);
+    await fs.remove(absolutePath);
+    await fs.remove(thumbAbsolutePath);
+  } else if (Array.isArray(files)) {
+    for (let v of files) {
+      let { absolutePath, thumbAbsolutePath } = filePath(v.saveName);
       await fs.remove(absolutePath);
-      await fs.remove(thumbAbsolutPath);
-    } else if (Array.isArray(files)) {
-      for (let v of files) {
-        let { absolutePath, thumbAbsolutPath } = filePath(files.saveName);
-        // console
-        await fs.remove(absolutePath);
-        await fs.remove(thumbAbsolutPath);
-      }
-    } else {
-      throw new Error("처리할수 없는 형식입니다.");
+      await fs.remove(thumbAbsolutePath);
+      console.log(absolutePath, thumbAbsolutePath);
     }
-  } catch (err) {
-    return err;
+  } else {
+    throw new Error("처리할수 없는 형식입니다.");
   }
 };
 

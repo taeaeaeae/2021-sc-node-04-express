@@ -122,11 +122,11 @@ router.get("/download/:id", async (req, res, next) => {
   }
 });
 
-// view
+// view, update
 router.get("/:id", async (req, res, next) => {
   try {
     let id = req.params.id;
-    let page = req.query.page;
+    let { page, type } = req.query;
     let sql = "SELECT * FROM board WHERE id=?";
     // [[데이터], 필드정보]
     const [[list]] = await pool.execute(sql, [id]);
@@ -144,7 +144,7 @@ router.get("/:id", async (req, res, next) => {
       return v.type === "F";
     });
     // res.json({ list, files });
-    res.render("board/view", { list, files, images, page });
+    res.render("board/" + type || "view", { list, files, images, page });
   } catch (err) {
     next(createError(err));
   }
@@ -161,7 +161,7 @@ router.delete("/", async (req, res, next) => {
     // 레코드 삭제
     sql = "DELETE FROM board WHERE id=?";
     await pool.execute(sql, [id]);
-    res.send("삭제");
+    res.redirect("/board?page"+page);
   } catch (err) {
     next(createError(err));
   }
