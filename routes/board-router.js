@@ -25,6 +25,7 @@ const moment = require("moment");
 const uploader = require("../middlewares/multer-mw");
 const resizer = require("../middlewares/sharp-mw");
 const { filePath, deleteFile } = require("../modules/util");
+const { Server } = require("http");
 
 const router = express.Router();
 
@@ -79,30 +80,41 @@ router.post(
   resizer("uploadImg"),
   async (req, res, next) => {
     try {
-      let sql = "";
-      const { title, writer, content } = req.body;
-      sql = "INSERT INTO board SET title=?, writer=?, content=?";
-      const [rs] = await pool.execute(sql, [title, writer, content]);
+      let sql = "",
+        values = [];
+      const { id, title, writer, content, page = 1 } = req.body;
+      if (id) {
+        sql = "UPDATE board SET title=?, writer=?, content=? WHERE id=?";
+        values = [title, writer, content, id];
+        console.log(sql, values);
+      } else {
+        sql = "INSERT INTO board SET title=?, writer=?, content=?";
+        values = [title, writer, content];
+      }
+      const [rs] = await pool.execute(sql, values);
 
       if (req.files.uploadImg) {
         for (let v of req.files.uploadImg) {
-          sql =
-            "INSERT INTO uploadfiles SET saveName=?, originName=?, mimeType=?, size=?, type=?, board_id=?";
           let { filename, originalname, size, mimetype } = v;
-          await pool.execute(sql, [filename, originalname, mimetype, size, "I", rs.insertId]);
+          let sql =
+            "INSERT INTO uploadfiles SET saveName=?, originName=?, mimeType=?, size=?, type=?, board_id=? ";
+          let values = [filename, originalname, mimetype, size, "I"];
+          values.push(id || rs.insertId);
+          await pool.execute(sql, values);
         }
       }
 
       if (req.files.uploadFile) {
         for (let v of req.files.uploadFile) {
-          sql =
-            "INSERT INTO uploadfiles SET saveName=?, originName=?, mimeType=?, size=?, type=?, board_id=?";
           let { filename, originalname, size, mimetype } = v;
-          await pool.execute(sql, [filename, originalname, mimetype, size, "F", rs.insertId]);
+          let sql =
+            "INSERT INTO uploadfiles SET saveName=?, originName=?, mimeType=?, size=?, type=?, board_id=? ";
+          let values = [filename, originalname, mimetype, size, "F"];
+          values.push(id || rs.insertId);
+          await pool.execute(sql, values);
         }
       }
-
-      res.redirect("/board");
+      res.redirect("/board?page=" + page);
     } catch (err) {
       next(createError(err));
     }
@@ -144,7 +156,7 @@ router.get("/:id", async (req, res, next) => {
       return v.type === "F";
     });
     // res.json({ list, files });
-    res.render("board/" + type || "view", { list, files, images, page });
+    res.render("board/" + (type || "view"), { list, files, images, page });
   } catch (err) {
     next(createError(err));
   }
@@ -161,7 +173,7 @@ router.delete("/", async (req, res, next) => {
     // 레코드 삭제
     sql = "DELETE FROM board WHERE id=?";
     await pool.execute(sql, [id]);
-    res.redirect("/board?page"+page);
+    res.redirect("/board?page" + page);
   } catch (err) {
     next(createError(err));
   }

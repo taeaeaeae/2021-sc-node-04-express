@@ -41,6 +41,6 @@
     <button type="button" 
     onclick="confirm('삭제하시겠습니까?') ? this.form.submit() : null" class="btn btn-danger">삭제</button>
   </form>
-  <a href="/board?page=<%= page %>" class="btn btn-success" style="float: right;">수정</a>
+  <a href="/board/<%= list.id %>?page=<%= page %>&type=update" class="btn btn-success" style="float: right;">수정</a>
 </div>
 <%- include('../inc/foot.ejs') %>

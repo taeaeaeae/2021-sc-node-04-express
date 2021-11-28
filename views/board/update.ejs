@@ -1,0 +1,82 @@
+<%- include('../inc/head.ejs') %>
+<h2 class="mb-3">글 수정하기</h2>
+<hr>
+<!-- multer 사용시 PUT을 method-override하지 못한다. POST로 보내야 함 -->
+<form method="POST" action="/board" enctype="multipart/form-data">
+  <input type="hidden" name="id" value="<%= list.id %>">
+  <input type="hidden" name="page" value="<%= page %>">
+  <table class="table">
+    <tbody>
+      <tr>
+        <td style="width: 150px;">제목</td>
+        <td>
+          <input type="text" name="title" class="form-control" placeholder="제목을 입력하세요" autofocus value="<%= list.title %>">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">작성자</td>
+        <td>
+          <input type="text" name="writer" class="form-control" placeholder="작성자를 입력하세요." value="<%= list.writer %>">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 150px;">내용</td>
+        <td>
+          <textarea name="content" class="form-control" style="min-height: 250px;" placeholder="내용을 입력하세요."><%= list.content %></textarea>
+        </td>
+      </tr>
+      <% for(let i=0; i<2; i++) { %>
+        <tr>
+          <td style="width: 150px;">첨부이미지</td>
+          <td>
+            <% if(images[i]) { %>
+              <img src="<%= images[i].thumb %>" alt="thumb" class="mr-3" style="max-width: 100px;">
+              <button type="button" class="btn btn-sm btn-danger bt-remove" data-id="<%= images[i].id %>">삭제</button>
+              <input type="file" name="uploadImg" class="form-control-file" style="display: none;">
+            <% } else { %>
+              <input type="file" name="uploadImg" class="form-control-file">
+            <% } %>
+          </td>
+        </tr>
+      <% } %>
+      <% for(let i=0; i<2; i++) { %>
+        <tr>
+          <td style="width: 150px;">첨부파일</td>
+          <td>
+            <% if(files[i]) { %>
+              <span><%= files[i].originName %></span>
+              <button type="button" class="btn btn-sm btn-danger bt-remove" data-id="<%= files[i].id %>">삭제</button>
+              <input type="file" name="uploadFile" class="form-control-file" style="display: none;">
+            <% } else { %>
+              <input type="file" name="uploadFile" class="form-control-file">
+            <% } %>
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <div class="text-center my-3">
+    <button type="submit" class="btn btn-success">수정</button>
+    <button type="reset" class="btn btn-danger">다시작성</button>
+  </div>
+</form>
+<script>
+  $(".bt-remove").on("click", function() {
+    if(confirm("삭제하시겠습니까?")) {
+      var $el = $(this);
+      var id = $(this).data("id");
+      $.get("/api/remove-file/"+id)
+        .then(function(result) {
+          if(result.success) {
+            $el.prev().remove();
+            $el.next().show();
+            $el.remove();
+          }
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+    }
+  })
+</script>
+<%- include('../inc/foot.ejs') %>

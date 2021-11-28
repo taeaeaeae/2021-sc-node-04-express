@@ -27,8 +27,10 @@ app.use("/", express.static("./public"));
 app.use("/uploads", express.static("./storages"));
 
 /********* Router Init *********/
+const apiRouter = require("./routes/api-router");
 const boardRouter = require("./routes/board-router");
 
+app.use("/api", apiRouter);
 app.use("/board", boardRouter);
 
 /********** Error Init *********/
