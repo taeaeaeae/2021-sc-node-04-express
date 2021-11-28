@@ -24,6 +24,7 @@ const pagerInit = require("../modules/pager-init");
 const moment = require("moment");
 const uploader = require("../middlewares/multer-mw");
 const resizer = require("../middlewares/sharp-mw");
+const { filePath } = require("../modules/util");
 
 const router = express.Router();
 
@@ -39,6 +40,7 @@ router.get("/", async (req, res, next) => {
       const pager = pagerInit(page, totalRecord);
       pager.loc = "/board";
       sql = "SELECT * FROM board ORDER BY id DESC LIMIT ?, ?";
+      // [[{}, {}, {}], 필드정보]
       const [lists] = await pool.execute(sql, [
         pager.startIdx.toString(),
         pager.listCnt.toString(),
@@ -49,8 +51,10 @@ router.get("/", async (req, res, next) => {
         let [thumb] = await pool.execute(sql, [v.id, "I"]);
         if (thumb.length) {
           let { saveName: name } = thumb[0];
-          // name = path.basename(name, path.extname(name)) + ".jpg";
-          v.thumb = path.join("/storages/", name.split("_")[0], "thumb", name);
+          name = path.basename(name, path.extname(name)) + ".jpg";
+          // v.thumb = path.join("/uploads/", name.split("_")[0], "thumb", name);
+          let { thumbPath } = filePath(name);
+          v.thumb = thumbPath;
         }
       }
       res.render("board/list", { lists, pager });
@@ -106,10 +110,28 @@ router.post(
   }
 );
 
-// list
-router.get("/", async (req, res, next) => {
+// view
+router.get("/:id", async (req, res, next) => {
   try {
-    res.render("board/list");
+    let id = req.params.id;
+    let sql = "SELECT * FROM board WHERE id=?";
+    // [[데이터], 필드정보]
+    const [[list]] = await pool.execute(sql, [id]);
+    list.updatedAt = moment(list.updatedAt).format("YYYY-MM-DD HH:mm:ss");
+    sql = "SELECT * FROM uploadfiles WHERE board_id=? ORDER BY type ASC";
+    const [data] = await pool.execute(sql, [list.id]);
+    const images = data.filter((v) => {
+      if (v.type === "I") {
+        let { virtualPath } = filePath(v.saveName);
+        v.thumb = virtualPath;
+        return true;
+      } else return false;
+    });
+    const files = data.filter((v) => {
+      return v.type === "F";
+    });
+    // res.json({ list, files });
+    res.render("board/view", { list, files, images });
   } catch (err) {
     next(createError(err));
   }

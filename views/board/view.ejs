@@ -1,0 +1,39 @@
+<%- include('../inc/head.ejs') %>
+<h2 class="mb-3">글 내용보기</h2>
+<hr>
+<table class="table">
+  <tbody>
+    <tr>
+      <td style="width: 150px;">제목</td>
+      <td><%= list.title %></td>
+    </tr>
+    <tr>
+      <td style="width: 150px;">작성자</td>
+      <td><%= list.writer %></td>
+    </tr>
+    <tr>
+      <td style="width: 150px;">내용</td>
+      <td><%= list.content %> </td>
+    </tr>
+    <% for(let v of images) { %>
+      <tr>
+        <td style="width: 150px;">첨부이미지</td>
+        <td>
+          <img src="<%= v.thumb %>" alt="thumb" class="mr-3" style="max-width: 200px;">
+          <div><a href="/board/download/<%= v.id %> "><%= v.originName %></a></div>
+        </td>
+      </tr>
+    <% } %>
+    <% for(let v of files) { %>
+      <tr>
+        <td style="width: 150px;">첨부파일</td>
+        <td><a href="/board/download/<%= v.id %> "><%= v.originName %></a></td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+<div class="text-center my-3">
+  <button type="submit" class="btn btn-primary">저장</button>
+  <button type="reset" class="btn btn-danger">다시작성</button>
+</div>
+<%- include('../inc/foot.ejs') %>

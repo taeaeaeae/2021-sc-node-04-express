@@ -12,11 +12,13 @@
     <% for(let v of lists) { %>
       <tr class="table-light">
         <td><%= v.id %></td>
-        <td style="text-align: left;" class="d-flex align-items-center">
-          <% if(v.thumb) { %>
-            <img src="<%= v.thumb %>" style="max-width: 48px; margin-right: 1em;" alt="">
-          <% } %>
-          <%= v.title %>
+        <td style="text-align: left;">
+          <a href="/board/<%= v.id %>" class="d-flex align-items-center">
+            <% if(v.thumb) { %>
+              <img src="<%= v.thumb %>" style="max-width: 48px; margin-right: 1em;" alt="">
+            <% } %>
+            <%= v.title %>
+          </a>
         </td>
         <td><%= v.writer %></td>
         <td><%= v.wdate %></td>

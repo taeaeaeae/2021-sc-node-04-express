@@ -46,6 +46,16 @@ SELECT DISTINCT title AS t FROM board
 	-- WHERE title='아버지를 아버지라..id'
 	WHERE title LIKE '%테스트%'
 	ORDER BY title ASC 
-	-- LIMIT 0, 5;
+	LIMIT 0, 5;
 
+SELECT COUNT(id) AS count FROM board;
 
+DELETE FROM board WHERE id = 40;
+
+-- JOIN
+SELECT board.*, uploadfiles.saveName 
+FROM board
+LEFT JOIN uploadfiles
+ON board.id = uploadfiles.board_id;
+ORDER BY board.id DESC
+LIMIT 0, 10;
