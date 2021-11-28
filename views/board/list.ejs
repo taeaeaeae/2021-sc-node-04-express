@@ -13,7 +13,7 @@
       <tr class="table-light">
         <td><%= v.id %></td>
         <td style="text-align: left;">
-          <a href="/board/<%= v.id %>" class="d-flex align-items-center">
+          <a href="/board/<%= v.id %>?page=<%=pager.page%>" class="d-flex align-items-center">
             <% if(v.thumb) { %>
               <img src="<%= v.thumb %>" style="max-width: 48px; margin-right: 1em;" alt="">
             <% } %>

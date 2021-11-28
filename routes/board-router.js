@@ -24,7 +24,7 @@ const pagerInit = require("../modules/pager-init");
 const moment = require("moment");
 const uploader = require("../middlewares/multer-mw");
 const resizer = require("../middlewares/sharp-mw");
-const { filePath } = require("../modules/util");
+const { filePath, deleteFile } = require("../modules/util");
 
 const router = express.Router();
 
@@ -51,7 +51,6 @@ router.get("/", async (req, res, next) => {
         let [thumb] = await pool.execute(sql, [v.id, "I"]);
         if (thumb.length) {
           let { saveName: name } = thumb[0];
-          name = path.basename(name, path.extname(name)) + ".jpg";
           // v.thumb = path.join("/uploads/", name.split("_")[0], "thumb", name);
           let { thumbPath } = filePath(name);
           v.thumb = thumbPath;
@@ -110,10 +109,24 @@ router.post(
   }
 );
 
+// download
+router.get("/download/:id", async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    let sql = "SELECT * FROM uploadfiles WHERE id=?";
+    const [[list]] = await pool.execute(sql, [id]);
+    let { absolutePath } = filePath(list.saveName);
+    res.download(absolutePath, list.originName);
+  } catch (err) {
+    next(createError(err));
+  }
+});
+
 // view
 router.get("/:id", async (req, res, next) => {
   try {
     let id = req.params.id;
+    let page = req.query.page;
     let sql = "SELECT * FROM board WHERE id=?";
     // [[데이터], 필드정보]
     const [[list]] = await pool.execute(sql, [id]);
@@ -131,25 +144,24 @@ router.get("/:id", async (req, res, next) => {
       return v.type === "F";
     });
     // res.json({ list, files });
-    res.render("board/view", { list, files, images });
+    res.render("board/view", { list, files, images, page });
   } catch (err) {
     next(createError(err));
   }
 });
 
-// list
-router.get("/", async (req, res, next) => {
+// DELETE
+router.delete("/", async (req, res, next) => {
   try {
-    res.render("board/list");
-  } catch (err) {
-    next(createError(err));
-  }
-});
-
-// list
-router.get("/", async (req, res, next) => {
-  try {
-    res.render("board/list");
+    let { id, page } = req.body;
+    // 실제 파일 삭제
+    let sql = "SELECT * FROM uploadfiles WHERE board_id=?";
+    const [rs] = await pool.execute(sql, [id]);
+    await deleteFile(rs);
+    // 레코드 삭제
+    sql = "DELETE FROM board WHERE id=?";
+    await pool.execute(sql, [id]);
+    res.send("삭제");
   } catch (err) {
     next(createError(err));
   }

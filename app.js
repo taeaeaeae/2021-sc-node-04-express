@@ -1,14 +1,15 @@
 /******** Global require *******/
-require('./modules/dotenv-init')();
+require("./modules/dotenv-init")();
 const express = require("express");
-//const logger = require("./middlewares/logger-mw");
+// const logger = require("./middlewares/logger-mw");
+const method = require("./middlewares/method-mw");
 const app = express();
 
 /********* Server Init *********/
 require("./modules/server-init")(app, process.env.PORT);
 
 /******* Middleware Init *******/
-//app.use(logger);
+// app.use(logger);
 
 /********* Views Init **********/
 app.set("view engine", "ejs");
@@ -18,14 +19,16 @@ app.locals.headTitle = "Express Twitter";
 
 /***** req.body Middleware *****/
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: false }));
+app.use(method);
 
-/*************Static Init ********/
+/********* Static Init *********/
 app.use("/", express.static("./public"));
-app.use("/storages", express.static("./storages"));
+app.use("/uploads", express.static("./storages"));
 
 /********* Router Init *********/
 const boardRouter = require("./routes/board-router");
+
 app.use("/board", boardRouter);
 
 /********** Error Init *********/

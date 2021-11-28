@@ -20,20 +20,27 @@
         <td style="width: 150px;">첨부이미지</td>
         <td>
           <img src="<%= v.thumb %>" alt="thumb" class="mr-3" style="max-width: 200px;">
-          <div><a href="/board/download/<%= v.id %> "><%= v.originName %></a></div>
+          <div><a href="/board/download/<%= v.id %>"><%= v.originName %></a></div>
         </td>
       </tr>
     <% } %>
     <% for(let v of files) { %>
       <tr>
         <td style="width: 150px;">첨부파일</td>
-        <td><a href="/board/download/<%= v.id %> "><%= v.originName %></a></td>
+        <td><a href="/board/download/<%= v.id %>"><%= v.originName %></a></td>
       </tr>
     <% } %>
   </tbody>
 </table>
 <div class="text-center my-3">
-  <button type="submit" class="btn btn-primary">저장</button>
-  <button type="reset" class="btn btn-danger">다시작성</button>
+  <a href="/board?page=<%= page %>" class="btn btn-primary">리스트</a>
+  <form method="POST" action="/board" style="float: right; margin-left: 0.5em;">
+    <input type="hidden" name="id" value="<%= list.id %>">
+    <input type="hidden" name="page" value="<%= page %>">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="button" 
+    onclick="confirm('삭제하시겠습니까?') ? this.form.submit() : null" class="btn btn-danger">삭제</button>
+  </form>
+  <a href="/board?page=<%= page %>" class="btn btn-success" style="float: right;">수정</a>
 </div>
 <%- include('../inc/foot.ejs') %>
