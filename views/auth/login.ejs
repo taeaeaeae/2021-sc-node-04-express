@@ -1,0 +1,51 @@
+<%- include('../inc/head.ejs') %>
+<style>
+h3.title {max-width: 500px; margin: 0 auto 32px auto;}
+.login-form {max-width: 500px; margin: auto; border-top: 1px solid #dee2e6;}
+</style> 
+<form name="loginForm" action="/auth/login" method="post">
+  <h3 class="title">회원로그인</h3>
+  <table class="table login-form">
+    <tbody>
+      <tr>
+        <td class="title">아이디</td>
+        <td class="content">
+          <input type="text" name="userid" placeholder="아이디" class="form-control">
+        </td>
+      </tr>
+      <tr>
+        <td class="title">패스워드</td>
+        <td class="content">
+          <input type="password" name="userpw" placeholder="패스워드" class="form-control">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="text-center my-4">
+    <button class="btn btn-primary">로그인</button>
+    <a href="/auth/join" class="btn btn-success">회원가입</a>
+  </div>
+</form>
+<script src="/js/validator.min.js"></script>
+<script>
+  document.loginForm.addEventListener("submit", function() {
+    event.preventDefault();
+    var options = {min: 6, max: 24};
+    var userid = this.userid.value.trim();
+    var userpw = this.userpw.value.trim();
+    var validUserid = validator.isLength(userid, options);
+    var validUserpw = validator.isLength(userpw, options);
+    if(!validUserid) {
+      alert("아이디는 6 ~ 24자 입니다.");
+      this.userid.focus();
+      return false;
+    }
+    if(!validUserpw) {
+      alert("패스워드는 6 ~ 24자 입니다.");
+      this.userpw.focus();
+      return false;
+    }
+    this.submit();
+  })
+</script>
+<%- include('../inc/foot.ejs') %>

@@ -1,0 +1,96 @@
+<%- include('../inc/head.ejs') %>
+<style>
+h3.title {max-width: 500px; margin: 0 auto 32px auto;}
+.join-form {max-width: 500px; margin: auto; border-top: 1px solid #dee2e6;}
+</style> 
+<form name="joinForm" action="/auth/join" method="post">
+  <h3 class="title">회원가입</h3>
+  <table class="table join-form">
+    <tbody>
+      <tr>
+        <td class="title">아이디</td>
+        <td class="content">
+          <input type="text" name="userid" placeholder="아이디" class="form-control">
+        </td>
+      </tr>
+      <tr>
+        <td class="title">패스워드</td>
+        <td class="content">
+          <input type="password" name="userpw" placeholder="패스워드" class="form-control">
+        </td>
+      </tr>
+      <tr>
+        <td class="title">패스워드 확인</td>
+        <td class="content">
+          <input type="password" name="userpw2" placeholder="패스워드확인" class="form-control">
+        </td>
+      </tr>
+      <tr>
+        <td class="title">이름</td>
+        <td class="content">
+          <input type="text" name="username" placeholder="이름" class="form-control">
+        </td>
+      </tr>
+      <tr>
+        <td class="title">이메일</td>
+        <td class="content">
+          <input type="text" name="email" placeholder="이메일" class="form-control">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="text-center my-4">
+    <button class="btn btn-primary">회원가입</button>
+    <button type="reset" class="btn btn-danger">다시작성</button>
+  </div>
+</form>
+<script src="/js/validator.min.js"></script>
+<script>
+  document.joinForm.addEventListener("submit", function() {
+    event.preventDefault();
+    var options = {min: 6, max: 24};
+    var userid = this.userid.value.trim();
+    var userpw = this.userpw.value.trim();
+    var userpw2 = this.userpw2.value.trim();
+    var username = this.username.value.trim();
+    var email = this.email.value.trim();
+    var validUserid = validator.isLength(userid, options);
+    var validUserpw = validator.isLength(userpw, options);
+    var validUserpw2 = validator.isLength(userpw2, options);
+    var validPassword = userpw === userpw2;
+    var validUsername = validator.isLength(username, {min:2, max: 255});
+    var validEmail = validator.isEmail(email);
+    if(!validUserid) {
+      alert("아이디는 6 ~ 24자 입니다.");
+      this.userid.focus();
+      return false;
+    }
+    if(!validUserpw) {
+      alert("패스워드는 6 ~ 24자 입니다.");
+      this.userpw.focus();
+      return false;
+    }
+    if(!validUserpw2) {
+      alert("패스워드는 6 ~ 24자 입니다.");
+      this.userpw2.focus();
+      return false;
+    }
+    if(!validPassword) {
+      alert("패스워드가 일치하지 않습니다.");
+      this.userpw.focus();
+      return false;
+    }
+    if(!validUsername) {
+      alert("이름은 2자 이상 입니다.");
+      this.username.focus();
+      return false;
+    }
+    if(!validEmail) {
+      alert("이메일 형식이 올바르지 않습니다.");
+      this.email.focus();
+      return false;
+    }
+    this.submit();
+  })
+</script>
+<%- include('../inc/foot.ejs') %> 

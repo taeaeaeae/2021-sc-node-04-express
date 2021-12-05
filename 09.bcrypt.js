@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const pass = "1234";
-const salt = "323j$23WREDF23@$%TSGF"
+const salt = "3hfd23j$23WdsREwaDF23@$%TSGF"
 const pass2 = "1234";
 
 async function genPass() {
