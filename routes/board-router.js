@@ -25,7 +25,7 @@ const moment = require("moment");
 const uploader = require("../middlewares/multer-mw");
 const resizer = require("../middlewares/sharp-mw");
 const { filePath, deleteFile } = require("../modules/util");
-const { Server } = require("http");
+const { isUser } = require("../middlewares/auth-mw");
 
 const router = express.Router();
 
@@ -65,7 +65,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // create
-router.get("/", async (req, res, next) => {
+router.get("/", isUser, async (req, res, next) => {
   try {
     res.render("board/form.ejs");
   } catch (err) {
@@ -76,6 +76,7 @@ router.get("/", async (req, res, next) => {
 // save
 router.post(
   "/",
+  isUser,
   uploader.fields([{ name: "uploadImg" }, { name: "uploadFile" }]),
   resizer("uploadImg"),
   async (req, res, next) => {
@@ -163,7 +164,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 // DELETE
-router.delete("/", async (req, res, next) => {
+router.delete("/", isUser, async (req, res, next) => {
   try {
     let { id, page } = req.body;
     // 실제 파일 삭제

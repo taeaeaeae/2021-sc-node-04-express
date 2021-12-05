@@ -6,14 +6,15 @@ const { pool } = require("../modules/mysql-init");
 const joinValidator = require("../middlewares/joinValidator");
 const loginValidator = require("../middlewares/loginValidator");
 const { alert } = require("../modules/util");
+const { isUser, isGuest } = require("../middlewares/auth-mw");
 
 // 로그인 창 보여주기
-router.get("/login", (req, res, next) => {
+router.get("/login", isGuest, (req, res, next) => {
   res.render("auth/login");
 });
 
 // 로그인 처리
-router.post("/login", loginValidator, async (req, res, next) => {
+router.post("/login", isGuest, loginValidator, async (req, res, next) => {
   try {
     let { userid, userpw } = req.body;
     let { BCRYPT_SALT: salt, BCRYPT_ROUND: round } = process.env;
@@ -37,17 +38,19 @@ router.post("/login", loginValidator, async (req, res, next) => {
 });
 
 // 로그아웃 처리
-router.get("/logout", (req, res, next) => {
-  res.send("<h1>로그인 처리</h1>");
+router.get("/logout", isUser, (req, res, next) => {
+  req.session.destroy(() => {
+    res.send(alert("로그아웃 되었습니다.", "/"));
+  });
 });
 
 // 회원가입창 보여주기
-router.get("/join", (req, res, next) => {
+router.get("/join", isGuest, (req, res, next) => {
   res.render("auth/join");
 });
 
 // 회원가입 처리
-router.post("/join", joinValidator, async (req, res, next) => {
+router.post("/join", isGuest, joinValidator, async (req, res, next) => {
   try {
     let { userid, userpw, username, email } = req.body;
     let sql = "INSERT INTO user SET userid=?, userpw=?, username=?, email=?";
@@ -60,12 +63,12 @@ router.post("/join", joinValidator, async (req, res, next) => {
 });
 
 // 회원수정창 보여주기
-router.get("/join/:id", (req, res, next) => {
+router.get("/join/:id", isUser, (req, res, next) => {
   res.send("<h1>JOIN FROM</h1>");
 });
 
 // 회원수정 처리
-router.put("/join", (req, res, next) => {
+router.put("/join", isUser, (req, res, next) => {
   res.send("수정");
 });
 
